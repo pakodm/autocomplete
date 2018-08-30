@@ -1,0 +1,13 @@
+<div [ngClass]="{'extraWidth' : extraWidth}">
+  <mat-form-field floatPlaceholder="auto" [ngClass]="{'extraWidth' : extraWidth}">
+      <mat-icon matSuffix class="search-icon">search</mat-icon>
+    <input matInput placeholder="{{placeholder}}" [matAutocomplete]="auto" [(ngModel)]="value" (blur)="onBlur()" (ngModelChange)="data = Autofilter($event)"
+      (focus)="data = source" disabled="{{disabled}}" (keydown.Tab)="returnFirstElement($event)" [errorStateMatcher]="matcher">
+    <mat-hint class="msn-error">{{msnError}}</mat-hint>
+  </mat-form-field>
+</div>
+<mat-autocomplete #auto="matAutocomplete" [displayWith]="display.bind(this)">
+  <mat-option *ngFor="let item of data" [value]="item[keyValue]">
+    {{item[keyValue]}} -- {{item[keyDisplay]}}
+  </mat-option>
+</mat-autocomplete>

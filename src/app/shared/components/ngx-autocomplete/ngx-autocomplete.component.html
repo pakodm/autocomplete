@@ -1,0 +1,42 @@
+<mat-form-field [hideRequiredMarker]="false" class="example-full-width" [ngSwitch]="true">
+  <ng-template matSuffix [ngSwitchCase]="source?.length <= 0 && !uri && jobjects.length <= 0">
+    <mat-icon [ngClass]="{ 'search-icon-disabled' : InputControl.disabled}" matSuffix class="search-icon">error_outline</mat-icon>
+  </ng-template>
+  <ng-template matSuffix [ngSwitchCase]="isLoadingData">
+    <mat-progress-spinner class="loading-spinner" [diameter]="18" [strokeWidth]="2" [color]="'primary'" [mode]="'indeterminate'"
+      [value]="100" matSuffix>
+    </mat-progress-spinner>
+  </ng-template>
+  <ng-template matSuffix [ngSwitchCase]="source?.length > 0">
+    <mat-icon [ngClass]="{ 'search-icon-disabled' : InputControl.disabled}" matSuffix class="search-icon">search</mat-icon>
+  </ng-template>
+  <input matInput placeholder="{{placeholder}}" aria-label="State" [matAutocomplete]="auto" [formControl]="InputControl"
+    (blur)="onBlur()" [errorStateMatcher]="matcher">
+  <mat-error *ngIf="OutputControl && OutputControl.hasError('required')">Required</mat-error>
+  <mat-error *ngIf="OutputControl && OutputControl.hasError('invalidSelection')">Invalid option</mat-error>
+  <mat-hint *ngIf="isLoadingData" align="start">Loading data...</mat-hint>
+  <mat-hint *ngIf="source?.length <= 0 && !isLoadingData" align="start">Can't load data</mat-hint>
+  <mat-autocomplete #auto="matAutocomplete" [ngModel]="InputDisplay" (optionSelected)="selectionChanged($event?.option?.value)"
+    ngDefaultControl>
+    <mat-option *ngFor="let item of filteredItems | async" [value]="item">
+      <div *ngIf="!templ; else customTemplate" fxLayout="column">
+        <div style="display: flex">
+          <strong class="key-style" style="vertical-align:middle;">ID: </strong>
+          <span class="key-style"> {{ item[keyValue] }}</span>
+        </div>
+        <span class="value-style">{{ item[keyDisplay] }}</span>
+      </div>
+      <ng-template #customTemplate [ngTemplateOutlet]="templ" [ngTemplateOutletContext]="{item: item}">
+      </ng-template>
+      <mat-divider></mat-divider>
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>
+
+
+<!-- 
+  Este template sirve para editar la lista desplegable del auto
+  <ng-template let-item="item">
+            {{item.Id}}
+  </ng-template> 
+-->
